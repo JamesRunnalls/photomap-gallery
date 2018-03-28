@@ -1,7 +1,7 @@
 # photomap-gallery
 Native html, css, javascript and php photo gallery/ map for geotagged photos.
 
-Example at jamesrunnalls.com/photogallery.html
+[Example here.](https://jamesrunnalls.com/photogallery.html)
 
 Instructions for use:
 
