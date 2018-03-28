@@ -1,0 +1,46 @@
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+    
+
+
+
+.flex-container > div {
+  background-color: #f1f1f1;
+  flex: 25%;
+  width: 25%;
+  height: 400px;
+  overflow: hidden;
+}  
+
+@media (max-width: 1100px) {
+  .flex-container > div {
+    flex: 50%;
+    width: 50%;
+    height: 400px;
+  }
+}
+@media (max-width: 600px) {
+  .flex-container > div {
+    flex: 100%;
+    width: 100%;
+    height: 400px;
+  }
+}   
+.img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.img:hover {
+  height:110%;
+  width: 110%;
+  object-fit: cover;
+  -webkit-transition: 0.6s ease;
+  transition: 0.6s ease;
+}
+    
+body {
+    margin: 0;
+}
