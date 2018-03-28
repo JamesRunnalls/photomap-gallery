@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/stylegallery.css">
+<title>Photo Gallery</title>
+<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+        position: relative;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+  #over_map { position: fixed; left:50%;bottom:10px;transform:translate(-50%,0%);-ms-transform:translate(-50%,0%); }
+  #over_map2 { position: absolute; right:3px;top:10px;transform:translate(-50%,0%);-ms-transform:translate(-50%,0%); }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+
+    
+   <div id="over_map">
+  From: <input type="date" id="start"> To: <input type="date" id="end"> <button onclick="datefilter()">Filter</button>
+  </div>
+  <div id="over_map2">
+  <form>
+  <input type="button" value="Map" onclick="window.location.href='http://jamesrunnalls.com/photomap.html'" />
+  </form>
+  </div>
+  
+  
+<script>
+var start = new Date(2000,11,11,11,11,11,0)
+var end = new Date(2100,11,11,11,11,11,0)
+plotimages(start,end);
+function plotimages(start,end) {
+  var arr = [];
+  downloadUrl('photos.xml', function(data) {
+    var xml = data.responseXML;
+    var markers = xml.documentElement.getElementsByTagName('photo');
+    var arr = [];
+    Array.prototype.forEach.call(markers, function(markerElem) {
+
+      var file = markerElem.getElementsByTagName('file')[0].childNodes[0].nodeValue;
+      var datetime = markerElem.getElementsByTagName('datetime')[0].childNodes[0].nodeValue;
+      var altitude = markerElem.getElementsByTagName('altitude')[0].childNodes[0].nodeValue;
+      var latitude = markerElem.getElementsByTagName('latitude')[0].childNodes[0].nodeValue;
+      var longitude = markerElem.getElementsByTagName('longitude')[0].childNodes[0].nodeValue;
+      
+      var k = datetime.split(/:| /);
+      var photodate = new Date(k[0],k[1]-1,k[2],k[3],k[4],k[5],0);
+     
+      arr.push([{date:photodate,lat:latitude,lon:longitude,file:file}]);
+      
+      
+      });
+      
+      arr.sort(sortFunction);
+      var text = '<div class="flex-container">'
+      for (var i = 0; i < arr.length; i++){	         
+        if (arr[i][0].date <= end && arr[i][0].date >= start || arr[i][0].date == "Invalid Date") {	  
+          text = text+'<div><a href="photomap.html#'+arr[i][0].lat+'&'+arr[i][0].lon+'" target="_blank"><img src="'+arr[i][0].file+'" title="'+arr[i][0].date+'" class="img"></a></div>';
+        } 
+      }
+      	      
+      text = text+'</div>';
+      div=document.getElementById('map');
+      div.innerHTML = text;
+
+   });
+}
+
+function datefilter() {
+         var start = new Date(document.getElementById("start").value);
+         var end = new Date(document.getElementById("end").value);
+         plotimages(start,end);
+	 }
+  
+function downloadUrl(url, callback) {
+        var request = window.ActiveXObject ?
+            new ActiveXObject('Microsoft.XMLHTTP') :
+            new XMLHttpRequest;
+
+        request.onreadystatechange = function() {
+          if (request.readyState == 4) {
+            request.onreadystatechange = doNothing;
+            callback(request, request.status);
+          }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+        }
+    
+function doNothing() {}
+
+function sortFunction(a, b) {
+    if (a[0].date === b[0].date) {
+        return 0;
+    }
+    else {
+        return (a[0].date > b[0].date) ? -1 : 1;
+    }
+} 
+    
+</script>
+
+</body>
+
+</html>
+
